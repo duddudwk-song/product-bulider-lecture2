@@ -29,7 +29,7 @@
                 <button id="contact-back-btn" class="back-btn">←</button>
                 <h2 class="section-title">제휴 문의</h2>
             </div>
-            <form action="https://formspree.io/f/xojnbodv" method="POST" class="contact-form">
+            <form id="contact-form" action="https://formspree.io/f/xojnbodv" method="POST" class="contact-form">
                 <div class="form-group">
                     <label for="name">성함/업체명</label>
                     <input type="text" id="name" name="name" placeholder="홍길동" required>
@@ -42,7 +42,12 @@
                     <label for="message">문의 내용</label>
                     <textarea id="message" name="message" rows="5" placeholder="제휴 관련 문의 내용을 입력해주세요." required></textarea>
                 </div>
-                <button type="submit" class="primary-btn full-width">문의 보내기</button>
+                <div class="form-checkbox">
+                    <input type="checkbox" id="privacy-agree" required>
+                    <label for="privacy-agree">개인정보 수집 및 이용에 동의합니다.</label>
+                </div>
+                <button type="submit" id="contact-submit" class="primary-btn full-width">문의 보내기</button>
+                <div id="form-status" class="form-status hidden"></div>
             </form>
         </section>
 

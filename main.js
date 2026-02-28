@@ -109,6 +109,50 @@ themeToggle.addEventListener('click', toggleTheme);
 contactBtn.addEventListener('click', () => showScreen(contactScreen));
 contactBackBtn.addEventListener('click', () => showScreen(startScreen));
 
+// Contact Form AJAX Submission
+const contactForm = document.getElementById('contact-form');
+const formStatus = document.getElementById('form-status');
+const contactSubmit = document.getElementById('contact-submit');
+
+contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // UI state while sending
+    contactSubmit.disabled = true;
+    contactSubmit.textContent = '보내는 중...';
+    formStatus.classList.add('hidden');
+    formStatus.classList.remove('success', 'error');
+
+    const formData = new FormData(contactForm);
+    
+    try {
+        const response = await fetch(contactForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            formStatus.textContent = '문의가 성공적으로 전달되었습니다. 감사합니다!';
+            formStatus.classList.remove('hidden');
+            formStatus.classList.add('success');
+            contactForm.reset();
+        } else {
+            const data = await response.json();
+            throw new Error(data.error || '오류가 발생했습니다.');
+        }
+    } catch (error) {
+        formStatus.textContent = error.message || '서버와의 통신에 실패했습니다. 다시 시도해 주세요.';
+        formStatus.classList.remove('hidden');
+        formStatus.classList.add('error');
+    } finally {
+        contactSubmit.disabled = false;
+        contactSubmit.textContent = '문의 보내기';
+    }
+});
+
 // Theme Management
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
