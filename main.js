@@ -94,6 +94,7 @@ const name2 = document.getElementById('name-2');
 const startBtn = document.getElementById('start-btn');
 const restartBtn = document.getElementById('restart-btn');
 const shareBtn = document.getElementById('share-btn');
+const themeToggle = document.getElementById('theme-toggle');
 
 // Event Listeners
 startBtn.addEventListener('click', initGame);
@@ -101,6 +102,30 @@ candidate1.addEventListener('click', () => selectWinner(0));
 candidate2.addEventListener('click', () => selectWinner(1));
 restartBtn.addEventListener('click', resetGame);
 shareBtn.addEventListener('click', shareResult);
+themeToggle.addEventListener('click', toggleTheme);
+
+// Theme Management
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+// Initialize theme on load
+initTheme();
 
 // Functions
 function shuffle(array) {
