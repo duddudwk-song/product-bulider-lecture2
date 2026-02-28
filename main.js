@@ -78,6 +78,7 @@ let matchIndex = 0; // 0 to 31 (for 64 round)
 const startScreen = document.getElementById('start-screen');
 const gameScreen = document.getElementById('game-screen');
 const winnerScreen = document.getElementById('winner-screen');
+const contactScreen = document.getElementById('contact-screen');
 
 const roundBadge = document.getElementById('round-badge');
 const progressFill = document.getElementById('progress-fill');
@@ -95,6 +96,8 @@ const startBtn = document.getElementById('start-btn');
 const restartBtn = document.getElementById('restart-btn');
 const shareBtn = document.getElementById('share-btn');
 const themeToggle = document.getElementById('theme-toggle');
+const contactBtn = document.getElementById('contact-btn');
+const contactBackBtn = document.getElementById('contact-back-btn');
 
 // Event Listeners
 startBtn.addEventListener('click', initGame);
@@ -103,6 +106,8 @@ candidate2.addEventListener('click', () => selectWinner(1));
 restartBtn.addEventListener('click', resetGame);
 shareBtn.addEventListener('click', shareResult);
 themeToggle.addEventListener('click', toggleTheme);
+contactBtn.addEventListener('click', () => showScreen(contactScreen));
+contactBackBtn.addEventListener('click', () => showScreen(startScreen));
 
 // Theme Management
 function initTheme() {
