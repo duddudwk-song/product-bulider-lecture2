@@ -1,195 +1,248 @@
-const uploadArea = document.getElementById('upload-area');
-const imageUpload = document.getElementById('image-upload');
-const uploadContent = document.getElementById('upload-content');
-const previewContainer = document.getElementById('preview-container');
-const imagePreview = document.getElementById('image-preview');
-const loadingOverlay = document.getElementById('loading-overlay');
-const resultSection = document.getElementById('result-section');
-const removeImageBtn = document.getElementById('remove-image-btn');
-
-// Theme Toggle Logic
-const themeToggle = document.getElementById('theme-toggle');
-const sunIcon = document.querySelector('.sun-icon');
-const moonIcon = document.querySelector('.moon-icon');
-
-// Check for saved theme
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
-updateThemeIcons(savedTheme);
-
-themeToggle.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeIcons(newTheme);
-});
-
-function updateThemeIcons(theme) {
-    if (theme === 'dark') {
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-    } else {
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-    }
-}
-
-// Mock Data for Results
-const animalTypes = [
-    {
-        name: '강아지상',
-        desc: '순하고 귀여운 인상으로 어디서나 사랑받는 타입입니다. 친근함이 당신의 가장 큰 무기!',
-        color: '#ffb142' // Custom color example
-    },
-    {
-        name: '고양이상',
-        desc: '도도하고 시크한 매력의 소유자. 날카로운 눈매 속에 숨겨진 따뜻함이 매력 포인트!',
-        color: '#ff5252'
-    },
-    {
-        name: '토끼상',
-        desc: '밝고 맑은 에너지의 소유자. 호기심 가득한 눈망울로 주변을 환하게 만듭니다.',
-        color: '#706fd3'
-    },
-    {
-        name: '공룡상',
-        desc: '강렬하고 카리스마 넘치는 인상. 무심한 듯 챙겨주는 츤데레 매력이 있습니다.',
-        color: '#33d9b2'
-    },
-    {
-        name: '곰상',
-        desc: '듬직하고 편안한 인상. 곁에 있으면 마음이 놓이는 힐링 캐릭터입니다.',
-        color: '#b33939'
-    }
+// Actor Data (64 Candidates)
+// Note: In a real production app, images would be hosted on a CDN.
+// Here we use placeholders with names for demonstration.
+const actors = [
+    { name: "송강", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Song+Kang" },
+    { name: "차은우", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Cha+Eun-woo" },
+    { name: "현빈", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Hyun+Bin" },
+    { name: "공유", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Gong+Yoo" },
+    { name: "이민호", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Min-ho" },
+    { name: "박서준", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Park+Seo-joon" },
+    { name: "이종석", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Jong-suk" },
+    { name: "지창욱", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Ji+Chang-wook" },
+    { name: "김수현", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Soo-hyun" },
+    { name: "박보검", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Park+Bo-gum" },
+    { name: "송중기", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Song+Joong-ki" },
+    { name: "남주혁", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Nam+Joo-hyuk" },
+    { name: "안효섭", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Ahn+Hyo-seop" },
+    { name: "이동욱", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Dong-wook" },
+    { name: "주지훈", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Ju+Ji-hoon" },
+    { name: "조인성", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Jo+In-sung" },
+    { name: "강동원", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kang+Dong-won" },
+    { name: "원빈", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Won+Bin" },
+    { name: "소지섭", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=So+Ji-sub" },
+    { name: "장동건", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Jang+Dong-gun" },
+    { name: "이정재", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Jung-jae" },
+    { name: "정우성", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Jung+Woo-sung" },
+    { name: "김우빈", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Woo-bin" },
+    { name: "이준기", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Joon-gi" },
+    { name: "박형식", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Park+Hyung-sik" },
+    { name: "육성재", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Yook+Sung-jae" },
+    { name: "로운", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Rowoon" },
+    { name: "이도현", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Do-hyun" },
+    { name: "황민현", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Hwang+Min-hyun" },
+    { name: "옹성우", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Ong+Seong-wu" },
+    { name: "서강준", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Seo+Kang-joon" },
+    { name: "여진구", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Yeo+Jin-goo" },
+    { name: "유승호", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Yoo+Seung-ho" },
+    { name: "임시완", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Im+Si-wan" },
+    { name: "도경수", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=D.O." },
+    { name: "이수혁", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Soo-hyuk" },
+    { name: "위하준", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Wi+Ha-joon" },
+    { name: "김선호", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Seon-ho" },
+    { name: "정해인", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Jung+Hae-in" },
+    { name: "변우석", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Byeon+Woo-seok" },
+    { name: "이재욱", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Jae-wook" },
+    { name: "김영대", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Young-dae" },
+    { name: "김민규", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Min-kyu" },
+    { name: "채종협", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Chae+Jong-hyeop" },
+    { name: "탕준상", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Tang+Jun-sang" },
+    { name: "배인혁", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Bae+In-hyuk" },
+    { name: "문상민", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Moon+Sang-min" },
+    { name: "최현욱", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Choi+Hyun-wook" },
+    { name: "신승호", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Shin+Seung-ho" },
+    { name: "김도완", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Do-wan" },
+    { name: "려운", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Ryeoun" },
+    { name: "이채민", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Chae-min" },
+    { name: "김지훈", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Ji-hoon" },
+    { name: "김범", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Bum" },
+    { name: "이진욱", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Lee+Jin-wook" },
+    { name: "유연석", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Yoo+Yeon-seok" },
+    { name: "손석구", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Son+Suk-ku" },
+    { name: "박해진", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Park+Hae-jin" },
+    { name: "서인국", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Seo+In-guk" },
+    { name: "장기용", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Jang+Ki-yong" },
+    { name: "우도환", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Woo+Do-hwan" },
+    { name: "양세종", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Yang+Se-jong" },
+    { name: "정일우", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Jung+Il-woo" },
+    { name: "김재욱", img: "https://via.placeholder.com/300x400/706fd3/ffffff?text=Kim+Jae-wook" }
 ];
 
-// Event Listeners for Upload Area
-uploadArea.addEventListener('click', () => imageUpload.click());
+// State
+let candidates = [];
+let nextRoundCandidates = [];
+let currentRound = 64; // 64, 32, 16, 8, 4, 2
+let matchIndex = 0; // 0 to 31 (for 64 round)
 
-uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.style.borderColor = '#03c75a';
-    uploadArea.style.backgroundColor = '#f0fdf4';
-});
+// DOM Elements
+const startScreen = document.getElementById('start-screen');
+const gameScreen = document.getElementById('game-screen');
+const winnerScreen = document.getElementById('winner-screen');
 
-uploadArea.addEventListener('dragleave', () => {
-    uploadArea.style.borderColor = '#e3e5e8';
-    uploadArea.style.backgroundColor = '#f5f6f8';
-});
+const roundBadge = document.getElementById('round-badge');
+const progressFill = document.getElementById('progress-fill');
+const matchCount = document.getElementById('match-count');
 
-uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.style.borderColor = '#e3e5e8';
-    uploadArea.style.backgroundColor = '#f5f6f8';
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-        handleImageUpload(file);
+const candidate1 = document.getElementById('candidate-1');
+const candidate2 = document.getElementById('candidate-2');
+
+const img1 = document.getElementById('img-1');
+const img2 = document.getElementById('img-2');
+const name1 = document.getElementById('name-1');
+const name2 = document.getElementById('name-2');
+
+const startBtn = document.getElementById('start-btn');
+const restartBtn = document.getElementById('restart-btn');
+const shareBtn = document.getElementById('share-btn');
+
+// Event Listeners
+startBtn.addEventListener('click', initGame);
+candidate1.addEventListener('click', () => selectWinner(0));
+candidate2.addEventListener('click', () => selectWinner(1));
+restartBtn.addEventListener('click', resetGame);
+shareBtn.addEventListener('click', shareResult);
+
+// Functions
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
-});
-
-imageUpload.addEventListener('change', (e) => {
-    if (e.target.files && e.target.files[0]) {
-        handleImageUpload(e.target.files[0]);
-    }
-});
-
-removeImageBtn.addEventListener('click', resetApp);
-
-function handleImageUpload(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        // Show Preview
-        imagePreview.src = e.target.result;
-        uploadContent.style.display = 'none';
-        previewContainer.style.display = 'flex';
-        removeImageBtn.style.display = 'block'; // Show reset button below
-        
-        // Start "Analysis"
-        startAnalysis();
-    };
-    reader.readAsDataURL(file);
+    return array;
 }
 
-function startAnalysis() {
-    loadingOverlay.style.display = 'flex';
-    resultSection.style.display = 'none';
+function initGame() {
+    candidates = shuffle([...actors]); // Copy and shuffle
+    currentRound = 64;
+    nextRoundCandidates = [];
+    matchIndex = 0;
 
-    // Simulate Network/Processing Delay (2.5 seconds)
-    setTimeout(() => {
-        loadingOverlay.style.display = 'none';
-        showResults();
-    }, 2500);
+    showScreen(gameScreen);
+    renderMatch();
 }
 
-function showResults() {
-    // 1. Generate random percentages that sum to 100
-    let remaining = 100;
-    const scores = [];
-    
-    // Generate 4 random numbers first
-    for (let i = 0; i < animalTypes.length - 1; i++) {
-        // Random number between 0 and remaining (with some buffer to ensure others get points)
-        const val = Math.floor(Math.random() * (remaining - (animalTypes.length - i - 1) * 5)); 
-        scores.push(val);
-        remaining -= val;
+function renderMatch() {
+    // Check if round is over
+    if (matchIndex >= candidates.length / 2) {
+        proceedToNextRound();
+        return;
     }
-    // Assign the remainder to the last one
-    scores.push(remaining);
 
-    // Combine with types
-    let results = animalTypes.map((type, index) => ({
-        ...type,
-        score: scores[index]
-    }));
+    const c1 = candidates[matchIndex * 2];
+    const c2 = candidates[matchIndex * 2 + 1];
 
-    // Sort by score descending to find the winner
-    results.sort((a, b) => b.score - a.score);
+    // Update Text
+    roundBadge.textContent = currentRound === 2 ? '결승전' : `${currentRound}강`;
+    matchCount.textContent = `${matchIndex + 1} / ${currentRound / 2}`;
     
-    const winner = results[0];
+    // Update Progress
+    const progress = (matchIndex / (currentRound / 2)) * 100;
+    progressFill.style.width = `${progress}%`;
 
-    // 2. Update DOM
-    document.getElementById('result-title').textContent = `당신은 매력적인 ${winner.name}!`;
-    document.getElementById('result-title').style.color = winner.color;
-    document.getElementById('result-desc').textContent = winner.desc;
+    // Render Cards
+    name1.textContent = c1.name;
+    img1.src = c1.img;
+    
+    name2.textContent = c2.name;
+    img2.src = c2.img;
 
-    // 3. Render Chart
-    const chartContainer = document.getElementById('chart-container');
-    chartContainer.innerHTML = ''; // Clear previous
+    // Reset Animations (Remove existing fade-in/out classes)
+    candidate1.classList.remove('fade-out', 'fade-in');
+    candidate2.classList.remove('fade-out', 'fade-in');
+}
 
-    results.forEach(item => {
-        const row = document.createElement('div');
-        row.className = 'chart-row';
+function selectWinner(winnerIndex) {
+    const winner = winnerIndex === 0 ? candidates[matchIndex * 2] : candidates[matchIndex * 2 + 1];
+    nextRoundCandidates.push(winner);
+    
+    matchIndex++;
+    
+    // Simple transition effect
+    renderMatch();
+}
+
+function proceedToNextRound() {
+    if (currentRound === 2) {
+        showWinner(nextRoundCandidates[0]);
+        return;
+    }
+
+    // Prepare for next round
+    candidates = shuffle([...nextRoundCandidates]);
+    nextRoundCandidates = [];
+    currentRound = currentRound / 2;
+    matchIndex = 0;
+
+    renderMatch();
+}
+
+function showWinner(winner) {
+    showScreen(winnerScreen);
+    
+    document.getElementById('winner-name').textContent = winner.name;
+    document.getElementById('winner-img').src = winner.img;
+    
+    // Confetti Effect (Simple CSS or JS based implementation could go here)
+    createConfetti();
+}
+
+function showScreen(screen) {
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+        s.classList.add('hidden');
+    });
+    screen.classList.remove('hidden');
+    screen.classList.add('active');
+}
+
+function resetGame() {
+    showScreen(startScreen);
+}
+
+function shareResult() {
+    const winnerName = document.getElementById('winner-name').textContent;
+    const text = `나의 이상형 월드컵 우승자는 ${winnerName}입니다! 당신의 선택은?`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: '한국 남배우 이상형 월드컵',
+            text: text,
+            url: window.location.href,
+        }).catch((error) => console.log('Error sharing', error));
+    } else {
+        alert('링크가 복사되었습니다!');
+        navigator.clipboard.writeText(`${text} ${window.location.href}`);
+    }
+}
+
+// Simple Confetti
+function createConfetti() {
+    const container = document.querySelector('.confetti-container');
+    container.innerHTML = ''; // Clear old
+
+    const colors = ['#f0932b', '#eb4d4b', '#6ab04c', '#7ed6df', '#e056fd', '#686de0'];
+
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.position = 'absolute';
+        confetti.style.width = '10px';
+        confetti.style.height = '10px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = -10 + 'px';
+        confetti.style.borderRadius = '50%';
+        confetti.style.opacity = Math.random();
         
-        // Create bar with dynamic width
-        row.innerHTML = `
-            <div class="label" style="color: var(--text-black)">${item.name}</div>
-            <div class="bar-bg" style="background-color: var(--bg-gray)">
-                <div class="bar-fill" style="width: 0%; background-color: ${item.color}"></div>
-            </div>
-            <div class="percentage" style="color: var(--text-gray)">${item.score}%</div>
-        `;
-        chartContainer.appendChild(row);
+        // Random Animation
+        const duration = Math.random() * 3 + 2;
+        confetti.style.transition = `top ${duration}s linear, transform ${duration}s ease-in-out`;
         
+        container.appendChild(confetti);
+
         // Trigger animation
         setTimeout(() => {
-            row.querySelector('.bar-fill').style.width = `${item.score}%`;
-        }, 50);
-    });
-
-    // 4. Show Section
-    resultSection.style.display = 'block';
-    
-    // Scroll to result
-    resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function resetApp() {
-    imageUpload.value = '';
-    imagePreview.src = '';
-    uploadContent.style.display = 'block';
-    previewContainer.style.display = 'none';
-    resultSection.style.display = 'none';
-    removeImageBtn.style.display = 'none';
+            confetti.style.top = '100%';
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        }, 100);
+    }
 }
