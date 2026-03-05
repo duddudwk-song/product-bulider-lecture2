@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 남배우 64강</title>
+    <title>AI 동물상 테스트 - 강아지 vs 고양이</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -12,14 +12,55 @@
 <body>
     <div class="app-container">
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        
         <!-- Start Screen -->
         <section id="start-screen" class="screen active">
-            <h1 class="main-title">한국 남배우<br>이상형 월드컵</h1>
-            <p class="subtitle">대한민국 최고의 미남 배우 64명 중<br>당신의 최애를 찾아보세요!</p>
-            <div class="mascot">🏆</div>
+            <h1 class="main-title">AI 동물상 테스트</h1>
+            <p class="subtitle">나는 강아지상일까, 고양이상일까?<br>AI가 분석하는 나의 얼굴상!</p>
+            <div class="mascot">🐶🐱</div>
+            
+            <div class="upload-area" id="upload-area">
+                <input type="file" id="image-input" accept="image/*" hidden>
+                <div class="upload-content">
+                    <div class="upload-icon">📸</div>
+                    <p>사진을 올리거나 눌러서 업로드</p>
+                    <span>(사진은 어디에도 저장되지 않습니다)</span>
+                </div>
+            </div>
+            
             <div class="start-actions">
-                <button id="start-btn" class="primary-btn">게임 시작하기 (64강)</button>
                 <button id="contact-btn" class="text-link-btn">제휴 문의하기</button>
+            </div>
+        </section>
+
+        <!-- Loading Screen -->
+        <section id="loading-screen" class="screen hidden">
+            <div class="loader"></div>
+            <p class="loading-text">AI가 당신의 얼굴을 분석 중입니다...</p>
+        </section>
+
+        <!-- Result Screen -->
+        <section id="result-screen" class="screen hidden">
+            <h2 class="result-title">분석 결과</h2>
+            
+            <div class="result-card">
+                <div class="image-preview-wrapper">
+                    <img id="face-image" src="" alt="User Face">
+                </div>
+                <div class="result-message">
+                    <span class="animal-emoji" id="result-emoji">🐶</span>
+                    <h3 id="result-animal-name">강아지상</h3>
+                    <p id="result-description">귀엽고 친근한 매력의 소유자!</p>
+                </div>
+            </div>
+
+            <div class="analysis-details" id="analysis-details">
+                <!-- Progress bars will be injected here -->
+            </div>
+
+            <div class="action-buttons">
+                <button id="restart-btn" class="secondary-btn">다시 하기</button>
+                <button id="share-btn" class="primary-btn">결과 공유하기</button>
             </div>
         </section>
 
@@ -42,63 +83,9 @@
                     <label for="message">문의 내용</label>
                     <textarea id="message" name="message" rows="5" placeholder="제휴 관련 문의 내용을 입력해주세요." required></textarea>
                 </div>
-                <div class="form-checkbox">
-                    <input type="checkbox" id="privacy-agree" required>
-                    <label for="privacy-agree">개인정보 수집 및 이용에 동의합니다.</label>
-                </div>
                 <button type="submit" id="contact-submit" class="primary-btn full-width">문의 보내기</button>
                 <div id="form-status" class="form-status hidden"></div>
             </form>
-        </section>
-
-        <!-- Game Screen -->
-        <section id="game-screen" class="screen hidden">
-            <div class="game-header">
-                <span class="round-badge" id="round-badge">64강</span>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-                <span class="match-count" id="match-count">1 / 32</span>
-            </div>
-            
-            <div class="battle-arena">
-                <div class="candidate-card" id="candidate-1">
-                    <div class="img-wrapper">
-                        <img src="" alt="Candidate 1" id="img-1">
-                        <div class="overlay"></div>
-                    </div>
-                    <div class="name-tag" id="name-1">이름 1</div>
-                </div>
-                
-                <div class="vs-badge">VS</div>
-
-                <div class="candidate-card" id="candidate-2">
-                    <div class="img-wrapper">
-                        <img src="" alt="Candidate 2" id="img-2">
-                        <div class="overlay"></div>
-                    </div>
-                    <div class="name-tag" id="name-2">이름 2</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Winner Screen -->
-        <section id="winner-screen" class="screen hidden">
-            <div class="confetti-container"></div>
-            <h2 class="winner-title">나의 이상형 월드컵 우승!</h2>
-            
-            <div class="winner-card">
-                <div class="crown">👑</div>
-                <div class="winner-img-wrapper">
-                    <img src="" alt="Winner" id="winner-img">
-                </div>
-                <h3 class="winner-name" id="winner-name">우승자 이름</h3>
-            </div>
-
-            <div class="action-buttons">
-                <button id="restart-btn" class="secondary-btn">다시 하기</button>
-                <button id="share-btn" class="primary-btn">결과 공유하기</button>
-            </div>
         </section>
     </div>
 
@@ -106,23 +93,22 @@
         <div id="disqus_thread"></div>
     </div>
 
+    <!-- TensorFlow & Teachable Machine Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
     <script>
-        /**
-        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
         var disqus_config = function () {
-            this.page.url = window.location.href;  // Replace PAGE_URL with your page's canonical URL variable
-            this.page.identifier = window.location.pathname; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+            this.page.url = window.location.href;
+            this.page.identifier = window.location.pathname;
         };
-        (function() { // DON'T EDIT BELOW THIS LINE
+        (function() {
             var d = document, s = d.createElement('script');
             s.src = 'https://productbuilder2333.disqus.com/embed.js';
             s.setAttribute('data-timestamp', +new Date());
             (d.head || d.body).appendChild(s);
         })();
     </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
     <script src="main.js"></script>
 </body>
 </html>
