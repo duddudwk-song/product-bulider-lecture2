@@ -167,6 +167,17 @@ function toggleTheme() {
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
     updateThemeIcon(newTheme);
+
+    // Reset Disqus for theme change if it's loaded
+    if (typeof DISQUS !== 'undefined') {
+        DISQUS.reset({
+            reload: true,
+            config: function () {
+                this.page.identifier = window.location.pathname;
+                this.page.url = window.location.href;
+            }
+        });
+    }
 }
 
 function updateThemeIcon(theme) {
