@@ -325,47 +325,113 @@ body {
 /* Info Section Styling */
 .info-section {
     width: 100%;
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 20px;
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 0 20px;
     color: var(--text-color);
-    line-height: 1.6;
+    line-height: 1.8;
 }
 
 .info-container {
     background: var(--card-bg);
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 5px 15px var(--shadow-color);
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px var(--shadow-color);
 }
 
-.info-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: var(--primary-color);
+.content-header {
     text-align: center;
+    margin-bottom: 30px;
 }
 
-.info-section h3 {
-    font-size: 1.2rem;
-    margin-top: 25px;
-    margin-bottom: 10px;
-    color: var(--text-color);
-    border-left: 4px solid var(--primary-color);
-    padding-left: 10px;
-}
-
-.info-section p {
+.content-header h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
     margin-bottom: 15px;
+}
+
+.intro-text {
+    font-size: 1.1rem;
+    color: var(--text-gray);
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: rgba(0,0,0,0.05);
+    margin: 40px 0;
+}
+
+.analysis-guide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 600px) {
+    .analysis-guide {
+        grid-template-columns: 1fr;
+    }
+}
+
+.guide-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.guide-item p {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    color: var(--text-gray);
+}
+
+.upcoming-features h3, .faq-section h3, .pro-tips h3 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: var(--text-black);
+}
+
+.upcoming-features ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.upcoming-features li {
+    background: rgba(var(--primary-rgb), 0.05);
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.faq-item {
+    margin-bottom: 20px;
+}
+
+.faq-item h4 {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.pro-tips ol {
+    padding-left: 20px;
+}
+
+.pro-tips li {
+    margin-bottom: 8px;
     font-size: 0.95rem;
     color: var(--text-gray);
 }
 
 .info-section .disclaimer {
-    margin-top: 30px;
+    margin-top: 40px;
     font-size: 0.85rem;
-    color: #999;
+    color: #bbb;
     text-align: center;
+    font-style: italic;
 }
 
 /* Footer Styling */
