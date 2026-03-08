@@ -11,6 +11,12 @@
       gtag('config', 'G-DY43HPZHET');
     </script>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI가 당신의 얼굴을 분석하여 강아지상인지 고양이상인지 알려드립니다. 연예인 데이터로 학습된 인공지능 동물상 테스트!">
+    <meta name="keywords" content="동물상 테스트, 인공지능 얼굴상, 강아지상 고양이상, AI 관상, 닮은꼴 연예인 찾기">
+    <meta property="og:type" content="website"> 
+    <meta property="og:title" content="AI 동물상 테스트 - 강아지 vs 고양이">
+    <meta property="og:description" content="나는 강아지상일까, 고양이상일까? AI가 분석해주는 나의 얼굴상 테스트!">
     <title>AI 동물상 테스트 - 강아지 vs 고양이</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,19 +28,18 @@
 </head>
 <body>
     <div class="app-container">
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-        
-        <!-- Start Screen -->
-        <section id="start-screen" class="screen active">
-            <h1 class="main-title">AI 동물상 테스트</h1>
-            <p class="subtitle">나는 강아지상일까, 고양이상일까?<br>AI가 분석하는 나의 얼굴상!</p>
-            
-            <!-- 상단 광고 단위 -->
-            <div class="ad-container">
+        <header>
+            <h1>AI 동물상 테스트</h1>
+            <p class="subtitle">나와 닮은 동물은 무엇일까요?</p>
+        </header>
+
+        <main>
+            <!-- 메인 광고 (상단) -->
+            <div class="ad-container top-ad">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-4028443023833942"
-                     data-ad-slot="YOUR_AD_SLOT_HERE"
+                     data-ad-slot="YOUR_AD_SLOT_ID_1"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
                 <script>
@@ -42,38 +47,35 @@
                 </script>
             </div>
 
-            <div class="mascot">🐶🐱</div>
-            
-            <div class="upload-area" id="upload-area">
-                <input type="file" id="image-input" accept="image/*" hidden>
-                <div class="upload-content">
-                    <div class="upload-icon">📸</div>
-                    <p>사진을 올리거나 눌러서 업로드</p>
-                    <span>(사진은 어디에도 저장되지 않습니다)</span>
+            <div class="upload-section" id="upload-section">
+                <div class="image-upload-wrap">
+                    <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+                    <div class="drag-text">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1160/1160358.png" alt="upload icon" class="upload-icon">
+                        <h3>얼굴 사진을 올리거나 눌러주세요!</h3>
+                        <p>(사진은 어디에도 저장되지 않습니다)</p>
+                    </div>
+                </div>
+                <div class="file-upload-content">
+                    <img class="file-upload-image" id="face-image" src="#" alt="your image" />
+                    <div id="loading" class="loading-container" style="display:none;">
+                        <div class="spinner"></div>
+                        <p>AI가 분석 중입니다...</p>
+                    </div>
+                    <div class="result-message"></div>
+                    <div id="label-container" class="label-container"></div>
+                    <div class="image-title-wrap">
+                        <button type="button" onclick="removeUpload()" class="remove-image">다른 사진으로 재시도</button>
+                    </div>
                 </div>
             </div>
-            
-            <div class="start-actions">
-                <button id="contact-btn" class="text-link-btn">제휴 문의하기</button>
-            </div>
-        </section>
 
-        <!-- Loading Screen -->
-        <section id="loading-screen" class="screen hidden">
-            <div class="loader"></div>
-            <p class="loading-text">AI가 당신의 얼굴을 분석 중입니다...</p>
-        </section>
-
-        <!-- Result Screen -->
-        <section id="result-screen" class="screen hidden">
-            <h2 class="result-title">분석 결과</h2>
-            
-            <!-- 결과창 광고 단위 -->
-            <div class="ad-container">
+            <!-- 결과 하단 광고 (중간) -->
+            <div class="ad-container middle-ad" id="middle-ad" style="display:none;">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-4028443023833942"
-                     data-ad-slot="YOUR_AD_SLOT_HERE"
+                     data-ad-slot="YOUR_AD_SLOT_ID_2"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
                 <script>
@@ -81,176 +83,56 @@
                 </script>
             </div>
 
-            <div class="result-card">
-                <div class="image-preview-wrapper">
-                    <img id="face-image" src="" alt="User Face">
-                </div>
-                <div class="result-message">
-                    <span class="animal-emoji" id="result-emoji">🐶</span>
-                    <h3 id="result-animal-name">강아지상</h3>
-                    <p id="result-description">귀엽고 친근한 매력의 소유자!</p>
-                </div>
-            </div>
-
-            <div class="analysis-details" id="analysis-details">
-                <!-- Progress bars will be injected here -->
-            </div>
-
-            <div class="action-buttons">
-                <button id="restart-btn" class="secondary-btn">다시 하기</button>
-                <button id="share-btn" class="primary-btn">결과 공유하기</button>
-            </div>
-        </section>
-
-        <!-- Contact Screen -->
-        <section id="contact-screen" class="screen hidden">
-            <div class="screen-header">
-                <button id="contact-back-btn" class="back-btn">←</button>
-                <h2 class="section-title">제휴 문의</h2>
-            </div>
-            <form id="contact-form" action="https://formspree.io/f/xojnbodv" method="POST" class="contact-form">
-                <div class="form-group">
-                    <label for="name">성함/업체명</label>
-                    <input type="text" id="name" name="name" placeholder="홍길동" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">이메일 주소</label>
-                    <input type="email" id="email" name="_replyto" placeholder="example@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">문의 내용</label>
-                    <textarea id="message" name="message" rows="5" placeholder="제휴 관련 문의 내용을 입력해주세요." required></textarea>
-                </div>
-                <button type="submit" id="contact-submit" class="primary-btn full-width">문의 보내기</button>
-                <div id="form-status" class="form-status hidden"></div>
-            </form>
-        </section>
-    </div>
-
-    <div class="comments-container">
-        <!-- 하단 광고 단위 -->
-        <div class="ad-container" style="margin-bottom: 20px;">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-4028443023833942"
-                 data-ad-slot="YOUR_AD_SLOT_HERE"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-        <div id="disqus_thread"></div>
-    </div>
-
-    <!-- SEO & Info Section (Rich Content Update) -->
-    <section class="info-section">
-        <div class="info-container">
-            <div class="content-header">
-                <h2>🐾 인공지능 동물상 테스트: 당신의 숨겨진 매력을 찾아서</h2>
-                <p class="intro-text">
-                    나의 얼굴은 어떤 동물을 닮았을까요? 
-                    단순히 재미를 넘어, 최신 AI 딥러닝 기술이 당신의 이목구비와 분위기를 분석합니다. 
-                    강아지처럼 친근한 매력인지, 고양이처럼 세련된 카리스마인지 지금 바로 확인해보세요!
-                </p>
-            </div>
-
-            <hr class="divider">
-
-            <!-- 전문 분석 가이드 -->
-            <div class="analysis-guide">
-                <div class="guide-item">
-                    <h3>🐶 강아지상 (Puppy Type)</h3>
-                    <p><strong>특징:</strong> 눈꼬리가 살짝 처지고, 동글동글한 코와 부드러운 턱선을 가졌습니다.</p>
-                    <p><strong>매력 포인트:</strong> 누구에게나 사랑받는 '멍뭉미', 친근하고 선한 인상으로 주변 사람들에게 편안함을 줍니다.</p>
-                    <p><strong>대표 연예인:</strong> 박보영, 한지민, 송중기, 강다니엘 등</p>
-                    <p><strong>추천 스타일:</strong> 부드러운 브라운 계열의 메이크업과 자연스러운 웨이브 헤어가 잘 어울립니다.</p>
-                </div>
-
-                <div class="guide-item">
-                    <h3>🐱 고양이상 (Cat Type)</h3>
-                    <p><strong>특징:</strong> 눈꼬리가 위로 향해 있으며, 날카로운 콧날과 갸름한 얼굴형이 특징입니다.</p>
-                    <p><strong>매력 포인트:</strong> 도도하고 시선을 사로잡는 섹시함, 신비로우면서도 지적인 카리스마를 풍깁니다.</p>
-                    <p><strong>대표 연예인:</strong> 한예슬, 블랙핑크 제니, 강동원, 이준기 등</p>
-                    <p><strong>추천 스타일:</strong> 깔끔한 아이라인 포인트와 세련된 스트레이트 헤어가 매력을 극대화합니다.</p>
+            <div class="guide-section">
+                <h2>AI 동물상 테스트 가이드</h2>
+                <div class="guide-grid">
+                    <div class="guide-item">
+                        <h3>🐶 강아지상 특징</h3>
+                        <p>동그란 눈매와 부드러운 인상, 웃을 때 선한 느낌을 주는 관상입니다. 친근하고 활기찬 에너지가 특징입니다.</p>
+                    </div>
+                    <div class="guide-item">
+                        <h3>🐱 고양이상 특징</h3>
+                        <p>눈꼬리가 살짝 올라가고 도도하며 세련된 분위기를 풍기는 관상입니다. 매혹적이고 신비로운 느낌이 특징입니다.</p>
+                    </div>
                 </div>
             </div>
 
-            <hr class="divider">
-
-            <!-- 추가 정보: 다른 동물상 예고 -->
-            <div class="upcoming-features">
-                <h3>🦊 그 외의 매력적인 동물상들</h3>
-                <p>현재는 강아지상과 고양이상을 정밀 분석 중이지만, 추후 다음과 같은 동물상 데이터가 추가될 예정입니다!</p>
-                <ul>
-                    <li><strong>토끼상:</strong> 앞니가 매력적이고 귀여운 동안 얼굴</li>
-                    <li><strong>공룡상:</strong> T존이 뚜렷하고 남성적인 매력이 넘치는 얼굴</li>
-                    <li><strong>여우상:</strong> 고양이상보다 더 날렵하고 지적인 느낌의 얼굴</li>
-                </ul>
-            </div>
-
-            <hr class="divider">
-
-            <!-- FAQ Section -->
             <div class="faq-section">
-                <h3>❓ 자주 묻는 질문 (FAQ)</h3>
-                <div class="faq-item">
-                    <h4>Q. 결과가 매번 다를 수 있나요?</h4>
-                    <p>A. 조명, 각도, 표정에 따라 AI가 인식하는 특징점이 달라질 수 있습니다. 가장 자연스러운 정면 사진으로 테스트하는 것을 추천드려요!</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Q. 사진은 정말 저장되지 않나요?</h4>
-                    <p>A. 네, 절대 저장되지 않습니다. 본 서비스는 구글의 TensorFlow.js 기술을 사용하여 사용자의 기기 내에서만 연산이 이루어지는 '클라이언트 사이드 분석' 방식을 채택하고 있습니다.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Q. 친구들과 결과를 공유하고 싶어요.</h4>
-                    <p>A. 결과 화면 하단의 '결과 공유하기' 버튼을 눌러보세요. 친구들과 서로의 동물상을 비교해보는 것도 큰 재미입니다!</p>
-                </div>
+                <h2>자주 묻는 질문 (FAQ)</h2>
+                <details>
+                    <summary>사진은 저장되나요?</summary>
+                    <p>아니요! 모든 분석은 사용자의 브라우저 내에서만 이루어지며, 사진은 서버로 전송되지 않고 즉시 휘발됩니다. 안심하고 사용하세요.</p>
+                </details>
+                <details>
+                    <summary>어떤 원리로 분석하나요?</summary>
+                    <p>수만 장의 연예인 사진 데이터를 학습한 Google Teachable Machine AI 모델이 당신의 얼굴 특징을 분석하여 가장 닮은 비율을 찾아냅니다.</p>
+                </details>
             </div>
+        </main>
 
-            <hr class="divider">
-
-            <!-- 정밀 분석 팁 -->
-            <div class="pro-tips">
-                <h3>💡 정확한 결과를 위한 꿀팁</h3>
-                <ol>
-                    <li>밝은 조명 아래서 그림자가 지지 않게 촬영하세요.</li>
-                    <li>안경이나 모자는 벗고 얼굴 전체가 잘 보이게 해주세요.</li>
-                    <li>무표정보다는 자연스러운 미소가 AI 분석에 도움이 됩니다.</li>
-                </ol>
+        <footer>
+            <div class="footer-links">
+                <a href="privacy.html">개인정보처리방침</a> | 
+                <a href="terms.html">이용약관</a>
             </div>
+            <p>&copy; 2024 AI 동물상 테스트. All Rights Reserved.</p>
+            <!-- 하단 고정 광고 -->
+            <div class="ad-container footer-ad">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-4028443023833942"
+                     data-ad-slot="YOUR_AD_SLOT_ID_3"
+                     data-ad-format="horizontal"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </footer>
+    </div>
 
-            <p class="disclaimer">
-                본 서비스는 오락을 목적으로 제작되었습니다. 결과에 너무 연연하지 마시고, 
-                당신이 가진 고유의 아름다움을 발견하는 즐거운 시간 되시길 바랍니다.
-            </p>
-        </div>
-    </section>
-
-    <footer class="site-footer">
-        <div class="footer-links">
-            <a href="terms.html">이용약관</a> | 
-            <a href="privacy.html">개인정보처리방침</a>
-        </div>
-        <p class="copyright">&copy; 2026 AI 동물상 테스트. All rights reserved.</p>
-    </footer>
-
-    <!-- TensorFlow & Teachable Machine Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-
-    <script>
-        var disqus_config = function () {
-            this.page.url = window.location.href;
-            this.page.identifier = window.location.pathname;
-        };
-        (function() {
-            var d = document, s = d.createElement('script');
-            s.src = 'https://productbuilder2333.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
